@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanical – Calvin Robot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex items-center gap-8">
+      <a href="index.html" class="font-bold text-orange-400 text-lg tracking-tight">CALVIN</a>
+      <div class="flex gap-6 text-sm text-gray-300">
+        <a href="index.html" class="hover:text-orange-400 transition-colors">Home</a>
+        <a href="mechanical.html" class="nav-active">Mechanical</a>
+        <a href="hardware.html" class="hover:text-orange-400 transition-colors">Hardware</a>
+        <a href="software.html" class="hover:text-orange-400 transition-colors">Software</a>
+        <a href="gallery.html" class="hover:text-orange-400 transition-colors">Gallery</a>
+        <a href="build-log.html" class="hover:text-orange-400 transition-colors">Build Log</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- AI stub warning -->
+  <div class="max-w-5xl mx-auto px-6 pt-6">
+    <div class="bg-gray-900/40 border border-gray-800 rounded-xl px-4 py-3 text-gray-500 text-sm text-center">
+      AI-generated stub — much of the information on this site is incorrect or placeholder.
+    </div>
+  </div>
+
+  <!-- Page header -->
+  <header class="max-w-5xl mx-auto px-6 pt-14 pb-10">
+    <p class="text-orange-400 text-sm font-semibold tracking-widest uppercase mb-2">Documentation</p>
+    <h1 class="text-4xl font-bold mb-4">Mechanical Design</h1>
+    <p class="text-gray-400 text-lg max-w-2xl">
+      Calvin's physical structure — the chassis that holds everything together and the drive
+      system that keeps it moving.
+    </p>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 pb-20 space-y-16">
+
+    <!-- Chassis -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">01</span> Chassis
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Structure</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Calvin's chassis is a custom-designed frame sized to accommodate the Arduino GIGA R1,
+            ODrive S1 controllers, battery, and motor mounts in a compact vertical stack.
+            The layout keeps the center of mass as low as possible to reduce the torque demand
+            on the balance loop.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>Two-wheeled self-balancing form factor</li>
+            <li>Vertical electronics stack — Jetson on top, GIGA R1 mid, battery low</li>
+            <li>Motor mounts integrated into the base plate</li>
+            <li>Removable side panels for cable access</li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Key Dimensions</h3>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-800">
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Form factor</td>
+                <td class="py-2 text-gray-300">Tall upright, two-wheeled</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Wheel base</td>
+                <td class="py-2 text-gray-300">Motor shaft to motor shaft</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Center of mass</td>
+                <td class="py-2 text-gray-300">Low — battery at base</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Camera mount</td>
+                <td class="py-2 text-gray-300">Top — forward-facing OAK-D Pro W</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">ToF mounts</td>
+                <td class="py-2 text-gray-300">Front face · two heights</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Electronics layout -->
+      <div class="mt-6 bg-gray-900 border border-gray-800 rounded-xl p-6">
+        <h3 class="font-semibold text-orange-300 mb-4">Electronics Layout</h3>
+        <div class="grid md:grid-cols-3 gap-4 text-sm">
+          <div class="border border-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-500 font-mono text-xs uppercase mb-2">Top</div>
+            <div class="text-gray-300 font-medium mb-1">Jetson Orin Nano</div>
+            <div class="text-gray-500 text-xs">Cogitator — AI and vision processing. OAK-D Pro W camera mounted at top face.</div>
+          </div>
+          <div class="border border-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-500 font-mono text-xs uppercase mb-2">Mid</div>
+            <div class="text-gray-300 font-medium mb-1">Arduino GIGA R1 + ODrives</div>
+            <div class="text-gray-500 text-xs">Instinctus firmware board and both ODrive S1 controllers. CAN bus daisy-chained between them.</div>
+          </div>
+          <div class="border border-gray-700/50 rounded-lg p-4">
+            <div class="text-gray-500 font-mono text-xs uppercase mb-2">Base</div>
+            <div class="text-gray-300 font-medium mb-1">Battery + Motor Mounts</div>
+            <div class="text-gray-500 text-xs">Battery pack kept low for stability. D5312S motors mount directly to base plate on each side.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Drive System -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">02</span> Drive System
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Motors</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            D5312S brushless outrunner motors — the same class of motor used in larger multirotor
+            drones. Running them direct-drive (no gearbox) keeps the drivetrain simple and
+            eliminates backlash, which matters for a balance control loop.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>53 mm stator diameter</li>
+            <li>~170 KV rating</li>
+            <li>Peak torque ~1.5 N·m</li>
+            <li>Direct drive — no gearbox</li>
+            <li>One per side, mirrored mount</li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Wheels</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Wheels mount directly to the motor shaft hub. The wheel diameter determines the
+            linear speed-to-RPM ratio and affects the balance controller's effective gain —
+            larger diameter means more ground speed per unit of motor velocity.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>Hub-mounted to motor shaft</li>
+            <li>Pneumatic or solid rubber tread</li>
+            <li>Matched pair — identical left and right</li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Motor Controllers</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Each motor is driven by a dedicated ODrive S1 single-axis brushless controller.
+            The ODrives run field-oriented control (FOC) internally, accepting high-level
+            velocity setpoints from the GIGA R1 over CAN bus.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>ODrive S1 × 2</li>
+            <li>FOC — smooth, efficient torque</li>
+            <li>Velocity control mode</li>
+            <li>CAN bus · 250 kbps</li>
+            <li>Up to 56 V / 40 A per controller</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Drive topology callout -->
+      <div class="mt-6 bg-gray-900/40 border border-gray-800 rounded-xl p-6">
+        <h3 class="font-semibold text-orange-300 mb-3">Direct-Drive Topology</h3>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-3xl">
+          Running the D5312S motors direct-drive means the wheel speed equals the motor speed with
+          no intermediate gearing. This simplifies the mechanical design and removes any backlash or
+          compliance that would degrade the balance loop's response. The trade-off is that the motor
+          must produce all required torque without mechanical advantage — the D5312S's relatively high
+          peak torque for its size makes this feasible at the wheel diameters chosen.
+        </p>
+      </div>
+    </section>
+
+    <!-- Power -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">03</span> Power
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Battery</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Calvin runs on a LiPo battery pack chosen to sit within the ODrive S1's voltage range
+            while delivering enough current for two motors under aggressive balance corrections.
+            The pack mounts at the base of the chassis to keep the center of mass low.
+          </p>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-800">
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Chemistry</td>
+                <td class="py-2 text-gray-300">LiPo</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Nominal voltage</td>
+                <td class="py-2 text-gray-300">6S · 22.2 V</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">ODrive input range</td>
+                <td class="py-2 text-gray-300">8–56 V (within spec)</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Placement</td>
+                <td class="py-2 text-gray-300">Base of chassis — low CoM</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Power Distribution</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            The battery feeds the ODrive S1 controllers directly at pack voltage. Lower-voltage
+            rails for the Arduino GIGA R1 and Jetson Orin Nano are derived via dedicated BEC /
+            DC-DC converters to isolate logic power from the noisy motor supply.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-2">
+            <li class="flex gap-3">
+              <span class="text-orange-400 font-mono text-xs w-16 shrink-0 pt-0.5">Motor rail</span>
+              <span>Battery voltage direct to both ODrive S1 controllers</span>
+            </li>
+            <li class="flex gap-3 pt-2 border-t border-gray-800">
+              <span class="text-orange-400 font-mono text-xs w-16 shrink-0 pt-0.5">5 V logic</span>
+              <span>DC-DC step-down for Arduino GIGA R1 and peripheral sensors</span>
+            </li>
+            <li class="flex gap-3 pt-2 border-t border-gray-800">
+              <span class="text-orange-400 font-mono text-xs w-16 shrink-0 pt-0.5">Jetson</span>
+              <span>Regulated supply via barrel jack — Jetson Orin Nano carrier board input</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
+    <div class="max-w-5xl mx-auto px-6">
+      Calvin Robot Project &nbsp;·&nbsp;
+      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+         class="hover:text-gray-400 transition-colors">GitHub</a>
+    </div>
+  </footer>
+
+</body>
+</html>
