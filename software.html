@@ -38,36 +38,90 @@
     <!-- Data flow diagram -->
     <section>
       <h2 class="text-2xl font-bold mb-6">System Data Flow</h2>
-      <div class="arch-diagram">
-┌──────────────────────────────────────────────────────────┐
-│                       EXPLORATOR                         │
-│               Electron + Vue 3 Desktop App               │
-│                  (Human workstation)                     │
-│                                                          │
-│   Telemetry display · Camera feeds · Manual controls     │
-└─────────────────────────┬────────────────────────────────┘
-                          │ TCP / WebSocket
-                          │ (LAN / WiFi)
-┌─────────────────────────▼────────────────────────────────┐
-│                       COGITATOR                          │
-│              Python services on Jetson Orin Nano         │
-│                                                          │
-│   Vision service (OAK-D)  ·  LLM service (planned)      │
-│   Telemetry relay  ·  Command router                     │
-└─────────────────────────┬────────────────────────────────┘
-                          │ USB-C Serial (UART)
-┌─────────────────────────▼────────────────────────────────┐
-│                      INSTINCTUS                          │
-│             Dual-core Arduino GIGA R1 firmware           │
-│                                                          │
-│   M7: sensor reads · serial bridge · event pub          │
-│   M4: PID balance loop · ODrive CAN commands            │
-└────────────────────┬──────────────┬──────────────────────┘
-                     │  CAN bus     │  CAN bus
-                ┌────▼────┐    ┌────▼────┐
-                │ ODrive  │    │ ODrive  │
-                │  S1 (L) │    │  S1 (R) │
-                └─────────┘    └─────────┘
+      <div class="bg-gray-900/40 border border-gray-800 rounded-2xl p-6 md:p-10">
+        <div class="flex flex-col items-stretch gap-0 max-w-xl mx-auto">
+
+          <!-- EXPLORATOR -->
+          <div class="rounded-xl border border-indigo-500/30 bg-indigo-500/5 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-3 border-b border-indigo-500/20">
+              <span class="font-mono font-bold tracking-widest text-indigo-300 text-xs uppercase">Explorator</span>
+              <span class="text-xs text-gray-500 font-mono">Electron + Vue 3</span>
+            </div>
+            <div class="px-5 py-4">
+              <p class="text-xs text-gray-500 leading-relaxed">Human workstation &nbsp;·&nbsp; Telemetry display &nbsp;·&nbsp; Camera feeds &nbsp;·&nbsp; Manual controls &nbsp;·&nbsp; PID tuning</p>
+            </div>
+          </div>
+
+          <!-- Connector: WebSocket -->
+          <div class="flex flex-col items-center py-3 gap-1">
+            <div class="w-px h-3 bg-gray-700"></div>
+            <span class="font-mono text-xs text-gray-600 border border-gray-700/50 rounded-full bg-gray-950 px-3 py-0.5">TCP / WebSocket &nbsp;·&nbsp; LAN / WiFi</span>
+            <div class="w-px h-3 bg-gray-700"></div>
+            <span class="text-gray-600 leading-none text-sm">▾</span>
+          </div>
+
+          <!-- COGITATOR -->
+          <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-3 border-b border-emerald-500/20">
+              <span class="font-mono font-bold tracking-widest text-emerald-300 text-xs uppercase">Cogitator</span>
+              <span class="text-xs text-gray-500 font-mono">Python &nbsp;·&nbsp; Jetson Orin Nano</span>
+            </div>
+            <div class="px-5 py-4">
+              <p class="text-xs text-gray-500 leading-relaxed">Vision service (OAK-D) &nbsp;·&nbsp; LLM processing <span class="text-orange-400/50">(planned)</span> &nbsp;·&nbsp; Telemetry relay &nbsp;·&nbsp; WebSocket API gateway</p>
+            </div>
+          </div>
+
+          <!-- Connector: UART -->
+          <div class="flex flex-col items-center py-3 gap-1">
+            <div class="w-px h-3 bg-gray-700"></div>
+            <span class="font-mono text-xs text-gray-600 border border-gray-700/50 rounded-full bg-gray-950 px-3 py-0.5">USB-C Serial (UART)</span>
+            <div class="w-px h-3 bg-gray-700"></div>
+            <span class="text-gray-600 leading-none text-sm">▾</span>
+          </div>
+
+          <!-- INSTINCTUS -->
+          <div class="rounded-xl border border-orange-500/30 bg-orange-500/5 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-3 border-b border-orange-500/20">
+              <span class="font-mono font-bold tracking-widest text-orange-300 text-xs uppercase">Instinctus</span>
+              <span class="text-xs text-gray-500 font-mono">Arduino GIGA R1</span>
+            </div>
+            <div class="grid grid-cols-2 divide-x divide-orange-500/10">
+              <div class="px-5 py-4">
+                <div class="text-orange-400/50 font-mono text-xs mb-1.5">M7 core</div>
+                <p class="text-xs text-gray-500 leading-relaxed">Sensor reads &nbsp;·&nbsp; Serial bridge &nbsp;·&nbsp; Event publisher</p>
+              </div>
+              <div class="px-5 py-4">
+                <div class="text-orange-400/50 font-mono text-xs mb-1.5">M4 core</div>
+                <p class="text-xs text-gray-500 leading-relaxed">PID balance loop &nbsp;·&nbsp; ODrive CAN commands</p>
+              </div>
+            </div>
+            <div class="border-t border-orange-500/10 px-5 py-3 flex items-center gap-2">
+              <span class="text-orange-400/40 text-xs font-mono">M7 ⇄ M4</span>
+              <p class="text-xs text-gray-600">Lock-free ring buffer in shared SRAM &nbsp;·&nbsp; typed event structs &nbsp;·&nbsp; no RTOS required</p>
+            </div>
+          </div>
+
+          <!-- Connector: CAN bus branch to ODrives -->
+          <div class="flex flex-col items-center pt-3 pb-1 gap-1">
+            <div class="w-px h-3 bg-gray-700"></div>
+            <span class="font-mono text-xs text-gray-600 border border-gray-700/50 rounded-full bg-gray-950 px-3 py-0.5">CAN Bus &nbsp;×&nbsp; 2</span>
+            <div class="w-px h-3 bg-gray-700"></div>
+            <span class="text-gray-600 leading-none text-sm">▾</span>
+          </div>
+
+          <!-- ODrives -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl border border-gray-700/50 bg-gray-900/50 px-4 py-4 text-center">
+              <div class="text-gray-600 font-mono text-xs mb-1">ODrive S1</div>
+              <div class="text-gray-300 text-sm font-medium">Left Motor</div>
+            </div>
+            <div class="rounded-xl border border-gray-700/50 bg-gray-900/50 px-4 py-4 text-center">
+              <div class="text-gray-600 font-mono text-xs mb-1">ODrive S1</div>
+              <div class="text-gray-300 text-sm font-medium">Right Motor</div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
 
@@ -264,6 +318,75 @@
       </div>
     </section>
 
+    <!-- Tooling -->
+    <section>
+      <h2 class="text-2xl font-bold mb-2 flex items-center gap-3">
+        <span class="text-orange-400">05</span> Tooling
+      </h2>
+      <p class="text-gray-400 text-sm max-w-2xl mb-8">
+        Calvin's firmware development relies on two purpose-built tools that replace the standard
+        Arduino IDE workflow with a faster, scriptable CLI paired with a graphical companion app.
+        Servitor depends on grot — it shells out to <code class="text-gray-300">grot build</code>
+        and <code class="text-gray-300">grot load</code> under the hood.
+      </p>
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <!-- Grot -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="font-semibold text-orange-300">grot</h3>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Ruby gem</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            A friendly CLI wrapper around <code class="text-gray-300">arduino-cli</code>.
+            Reads a per-project <code class="text-gray-300">.grotconfig</code> TOML file for board
+            FQBN, port, and sketch path, then exposes memorable sub-commands for the most common
+            development loops.
+          </p>
+          <ul class="text-sm space-y-2.5">
+            <li>
+              <div class="text-gray-300 font-mono">grot build</div>
+              <div class="text-gray-500 text-xs mt-0.5">Compile the sketch via arduino-cli with config-driven settings</div>
+            </li>
+            <li class="pt-2 border-t border-gray-800">
+              <div class="text-gray-300 font-mono">grot load</div>
+              <div class="text-gray-500 text-xs mt-0.5">Upload the compiled binary to the connected board</div>
+            </li>
+            <li class="pt-2 border-t border-gray-800">
+              <div class="text-gray-300 font-mono">grot ports</div>
+              <div class="text-gray-500 text-xs mt-0.5">List available serial ports and identify Arduino connections</div>
+            </li>
+            <li class="pt-2 border-t border-gray-800">
+              <div class="text-gray-300 font-mono">grot init</div>
+              <div class="text-gray-500 text-xs mt-0.5">Scaffold a <code class="text-gray-400">.grotconfig</code> template in the project root</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Servitor -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="font-semibold text-orange-300">Servitor</h3>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Electron / Vue 3</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            A cross-platform desktop app that consolidates the Arduino development loop into a
+            single window — project dashboard, serial monitor, and live data plotter — with
+            one-click build and upload backed by grot.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>Project dashboard — per-project build/load buttons with streaming output</li>
+            <li>Auto port detection — scans ports and updates <code class="text-gray-400">.grotconfig</code> automatically</li>
+            <li>Serial monitor — real-time text view with send capability</li>
+            <li>Serial plotter — live charts from <code class="text-gray-400">key:value</code> data streamed off the board</li>
+            <li>9 OKLCH themes, persistent light/dark mode preference</li>
+            <li>Targets macOS, Windows, and Linux</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
     <!-- GitHub repos summary -->
     <section>
       <h2 class="text-2xl font-bold mb-6">All Repositories</h2>
@@ -303,6 +426,24 @@
           </div>
           <p class="text-gray-400 text-sm">Monorepo containing InstinctusKit shared library</p>
           <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/librarius →</div>
+        </a>
+        <a href="https://github.com/fungus-wine/grot" target="_blank" rel="noopener"
+           class="bg-gray-900 border border-gray-800 hover:border-orange-600 rounded-xl p-5 transition-colors block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold">grot</span>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Ruby</span>
+          </div>
+          <p class="text-gray-400 text-sm">arduino-cli wrapper — build, upload, and port management via CLI</p>
+          <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/grot →</div>
+        </a>
+        <a href="https://github.com/fungus-wine/servitor" target="_blank" rel="noopener"
+           class="bg-gray-900 border border-gray-800 hover:border-orange-600 rounded-xl p-5 transition-colors block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold">servitor</span>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Electron / Vue</span>
+          </div>
+          <p class="text-gray-400 text-sm">Desktop app — project dashboard, serial monitor, and live data plotter</p>
+          <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/servitor →</div>
         </a>
       </div>
     </section>
