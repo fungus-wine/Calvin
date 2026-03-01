@@ -1,0 +1,40 @@
+/* Calvin Robot Documentation – custom styles */
+
+/* Active nav link highlight */
+.nav-active {
+  color: #f97316; /* Tailwind orange-500 */
+  font-weight: 600;
+  border-bottom: 2px solid #f97316;
+}
+
+/* Prose content width cap */
+.prose-content {
+  max-width: 72ch;
+}
+
+/* Build log timeline line */
+.build-entry {
+  border-left: 3px solid #f97316;
+  padding-left: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+/* Gallery caption */
+.gallery-caption {
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 0.4rem;
+}
+
+/* ASCII / code diagram */
+.arch-diagram {
+  font-family: 'Courier New', Courier, monospace;
+  background: #1e293b;
+  color: #94a3b8;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  overflow-x: auto;
+  line-height: 1.6;
+  font-size: 0.85rem;
+}

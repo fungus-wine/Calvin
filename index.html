@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calvin – Self-Balancing Robot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex items-center gap-8">
+      <span class="font-bold text-orange-400 text-lg tracking-tight">CALVIN</span>
+      <div class="flex gap-6 text-sm text-gray-300">
+        <a href="index.html" class="nav-active">Home</a>
+        <a href="hardware.html" class="hover:text-orange-400 transition-colors">Hardware</a>
+        <a href="software.html" class="hover:text-orange-400 transition-colors">Software</a>
+        <a href="gallery.html" class="hover:text-orange-400 transition-colors">Gallery</a>
+        <a href="build-log.html" class="hover:text-orange-400 transition-colors">Build Log</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="max-w-5xl mx-auto px-6 pt-20 pb-16">
+    <div class="flex flex-col md:flex-row items-center gap-12">
+      <div class="flex-1">
+        <p class="text-orange-400 text-sm font-semibold tracking-widest uppercase mb-3">Project Calvin</p>
+        <h1 class="text-5xl font-bold leading-tight mb-5">
+          A self-balancing<br>robot with a brain.
+        </h1>
+        <p class="text-gray-400 text-lg leading-relaxed mb-8">
+          Calvin is a two-wheeled self-balancing robot built around dual-core real-time firmware,
+          an AI-capable edge computer, and a desktop monitoring app — all wired together into
+          a single coherent system.
+        </p>
+        <div class="flex gap-4 flex-wrap">
+          <a href="hardware.html"
+             class="bg-orange-500 hover:bg-orange-400 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm">
+            Explore Hardware
+          </a>
+          <a href="software.html"
+             class="border border-gray-600 hover:border-orange-400 text-gray-300 hover:text-orange-400 font-semibold px-5 py-2.5 rounded-lg transition-colors text-sm">
+            Software Architecture
+          </a>
+        </div>
+      </div>
+      <!-- Hero image placeholder -->
+      <div class="flex-shrink-0 w-72 h-72 bg-gray-800 rounded-2xl border border-gray-700 flex flex-col items-center justify-center text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+            d="M12 3a3 3 0 00-3 3v1H7a2 2 0 00-2 2v2a2 2 0 002 2h1v4a2 2 0 002 2h2a2 2 0 002-2v-4h1a2 2 0 002-2V9a2 2 0 00-2-2h-2V6a3 3 0 00-3-3z"/>
+        </svg>
+        <span class="text-sm">Hero image coming soon</span>
+        <span class="text-xs mt-1">Drop photo in assets/images/</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- What is Calvin? -->
+  <section class="bg-gray-900 border-y border-gray-800 py-14">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-2xl font-bold mb-5">What is Calvin?</h2>
+      <p class="text-gray-400 leading-relaxed max-w-3xl mb-4">
+        Calvin is a research and hobby platform for exploring real-time balance control, edge AI,
+        and human-robot interaction. It rides on two brushless motors driven by ODrive S1 controllers,
+        staying upright via a complementary-filter control loop running on an Arduino GIGA R1.
+      </p>
+      <p class="text-gray-400 leading-relaxed max-w-3xl">
+        A Jetson Orin Nano rides on top as the "brain" — handling computer vision via an OAK-D Pro W
+        stereo camera, future LLM integration, and acting as a serial bridge to the lower-level firmware.
+        A custom Electron desktop app provides real-time telemetry and remote control.
+      </p>
+    </div>
+  </section>
+
+  <!-- System cards -->
+  <section class="max-w-5xl mx-auto px-6 py-16">
+    <h2 class="text-2xl font-bold mb-10">Three interconnected systems</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Instinctus -->
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-orange-600 transition-colors">
+        <div class="text-orange-400 font-mono text-xs uppercase tracking-widest mb-3">Firmware</div>
+        <h3 class="text-xl font-bold mb-3">Instinctus</h3>
+        <p class="text-gray-400 text-sm leading-relaxed mb-5">
+          Dual-core Arduino GIGA R1 firmware. M4 runs the real-time balance loop;
+          M7 handles comms, sensors, and higher-level commands. Drives two ODrive S1 motor controllers
+          over CAN bus.
+        </p>
+        <div class="text-xs text-gray-500 mb-4 space-y-1">
+          <div>Arduino GIGA R1 WiFi</div>
+          <div>ICM20948 IMU · 2× VL53L4CX ToF</div>
+          <div>CAN bus 250 kbps</div>
+        </div>
+        <a href="https://github.com/fungus-wine/calvin_instinctus"
+           target="_blank" rel="noopener"
+           class="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors">
+          GitHub →
+        </a>
+      </div>
+
+      <!-- Cogitator -->
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-orange-600 transition-colors">
+        <div class="text-orange-400 font-mono text-xs uppercase tracking-widest mb-3">Edge AI</div>
+        <h3 class="text-xl font-bold mb-3">Cogitator</h3>
+        <p class="text-gray-400 text-sm leading-relaxed mb-5">
+          High-level intelligence running on a Jetson Orin Nano. Handles computer vision with an OAK-D
+          Pro W depth camera, future LLM integration, and bridges commands down to Instinctus over serial.
+        </p>
+        <div class="text-xs text-gray-500 mb-4 space-y-1">
+          <div>Jetson Orin Nano 8 GB</div>
+          <div>OAK-D Pro W stereo camera</div>
+          <div>Python services · Serial bridge</div>
+        </div>
+        <a href="https://github.com/fungus-wine/calvin_cogitator"
+           target="_blank" rel="noopener"
+           class="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors">
+          GitHub →
+        </a>
+      </div>
+
+      <!-- Explorator -->
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-orange-600 transition-colors">
+        <div class="text-orange-400 font-mono text-xs uppercase tracking-widest mb-3">Desktop App</div>
+        <h3 class="text-xl font-bold mb-3">Explorator</h3>
+        <p class="text-gray-400 text-sm leading-relaxed mb-5">
+          A cross-platform Electron + Vue 3 desktop application for real-time telemetry, live camera
+          feeds, and manual control. The human window into Calvin's inner world.
+        </p>
+        <div class="text-xs text-gray-500 mb-4 space-y-1">
+          <div>Electron + Vue 3</div>
+          <div>Real-time telemetry</div>
+          <div>Remote control interface</div>
+        </div>
+        <a href="https://github.com/fungus-wine/calvin_explorator"
+           target="_blank" rel="noopener"
+           class="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors">
+          GitHub →
+        </a>
+      </div>
+
+    </div>
+
+    <!-- InstinctusKit callout -->
+    <div class="mt-6 bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div class="flex-1">
+        <div class="text-orange-400 font-mono text-xs uppercase tracking-widest mb-1">Shared Library</div>
+        <h3 class="font-bold mb-1">InstinctusKit</h3>
+        <p class="text-gray-400 text-sm">
+          A shared Arduino library providing the inter-core event queue system used by Instinctus.
+          Lives in the <code class="text-gray-300 bg-gray-800 px-1 rounded">librarius</code> monorepo.
+        </p>
+      </div>
+      <a href="https://github.com/fungus-wine/librarius"
+         target="_blank" rel="noopener"
+         class="text-orange-400 hover:text-orange-300 text-sm font-medium transition-colors whitespace-nowrap">
+        GitHub →
+      </a>
+    </div>
+  </section>
+
+  <!-- Quick links -->
+  <section class="bg-gray-900 border-t border-gray-800 py-12">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-xl font-bold mb-6 text-gray-300">Explore the documentation</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a href="hardware.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <div class="text-2xl mb-2">⚙️</div>
+          <div class="font-semibold text-sm">Hardware</div>
+          <div class="text-xs text-gray-500 mt-1">Specs &amp; components</div>
+        </a>
+        <a href="software.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <div class="text-2xl mb-2">💻</div>
+          <div class="font-semibold text-sm">Software</div>
+          <div class="text-xs text-gray-500 mt-1">Architecture &amp; code</div>
+        </a>
+        <a href="gallery.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <div class="text-2xl mb-2">📷</div>
+          <div class="font-semibold text-sm">Gallery</div>
+          <div class="text-xs text-gray-500 mt-1">Photos &amp; videos</div>
+        </a>
+        <a href="build-log.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <div class="text-2xl mb-2">📋</div>
+          <div class="font-semibold text-sm">Build Log</div>
+          <div class="text-xs text-gray-500 mt-1">Progress updates</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
+    <div class="max-w-5xl mx-auto px-6">
+      Calvin Robot Project &nbsp;·&nbsp;
+      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+         class="hover:text-gray-400 transition-colors">GitHub</a>
+    </div>
+  </footer>
+
+</body>
+</html>

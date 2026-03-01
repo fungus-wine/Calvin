@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Log – Calvin Robot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex items-center gap-8">
+      <a href="index.html" class="font-bold text-orange-400 text-lg tracking-tight">CALVIN</a>
+      <div class="flex gap-6 text-sm text-gray-300">
+        <a href="index.html" class="hover:text-orange-400 transition-colors">Home</a>
+        <a href="hardware.html" class="hover:text-orange-400 transition-colors">Hardware</a>
+        <a href="software.html" class="hover:text-orange-400 transition-colors">Software</a>
+        <a href="gallery.html" class="hover:text-orange-400 transition-colors">Gallery</a>
+        <a href="build-log.html" class="nav-active">Build Log</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header class="max-w-5xl mx-auto px-6 pt-14 pb-10">
+    <p class="text-orange-400 text-sm font-semibold tracking-widest uppercase mb-2">Progress</p>
+    <h1 class="text-4xl font-bold mb-4">Build Log</h1>
+    <p class="text-gray-400 text-lg max-w-2xl">
+      A running record of Calvin's construction and development — newest entries first.
+    </p>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-6 pb-20">
+
+    <!--
+      HOW TO ADD A BUILD LOG ENTRY:
+      1. Copy the <article> block below (including its surrounding comment markers)
+      2. Paste it ABOVE the current topmost entry (newest first)
+      3. Update:
+         - <h2> date (e.g. "2026-03-15")
+         - <p> description text
+         - Optionally add an <img> inside the article
+
+      Example with image:
+        <img src="assets/images/your-photo.jpg" alt="Description"
+             class="rounded-xl border border-gray-700 mt-4 w-full">
+    -->
+
+    <!-- ===================== ENTRIES START HERE ===================== -->
+
+    <!-- Entry: 2026-03-01 -->
+    <article class="build-entry mb-12">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 rounded-full bg-orange-400 shrink-0 -ml-[1.6875rem] ring-4 ring-gray-950"></span>
+        <h2 class="text-lg font-bold text-orange-300">2026-03-01</h2>
+        <span class="text-xs text-gray-600 bg-gray-900 border border-gray-800 px-2 py-0.5 rounded-full">Project start</span>
+      </div>
+      <p class="text-gray-400 leading-relaxed mb-3">
+        Project kicked off. Defined the three-system architecture — Instinctus (Arduino GIGA R1 firmware),
+        Cogitator (Jetson Orin Nano services), and Explorator (Electron desktop app) — along with the
+        InstinctusKit shared library in the librarius monorepo.
+      </p>
+      <p class="text-gray-400 leading-relaxed mb-3">
+        Hardware selection finalized: ODrive S1 motor controllers, D5312S brushless outrunner motors,
+        ICM-20948 9-axis IMU, dual VL53L4CX ToF sensors, and OAK-D Pro W stereo camera.
+        CAN bus at 250 kbps chosen for the motor control link.
+      </p>
+      <p class="text-gray-400 leading-relaxed">
+        This documentation site created. GitHub repositories initialized for all four components.
+      </p>
+    </article>
+
+    <!-- ===================== ENTRIES END HERE ===================== -->
+
+    <!-- Empty state (shown until more entries exist) -->
+    <div class="text-center py-16 text-gray-700 border border-dashed border-gray-800 rounded-xl">
+      <p class="text-sm">More entries coming as the build progresses.</p>
+      <p class="text-xs mt-2">Copy the entry template in the HTML source to add your own.</p>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
+    <div class="max-w-5xl mx-auto px-6">
+      Calvin Robot Project &nbsp;·&nbsp;
+      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+         class="hover:text-gray-400 transition-colors">GitHub</a>
+    </div>
+  </footer>
+
+</body>
+</html>

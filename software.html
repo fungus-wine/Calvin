@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Software – Calvin Robot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex items-center gap-8">
+      <a href="index.html" class="font-bold text-orange-400 text-lg tracking-tight">CALVIN</a>
+      <div class="flex gap-6 text-sm text-gray-300">
+        <a href="index.html" class="hover:text-orange-400 transition-colors">Home</a>
+        <a href="hardware.html" class="hover:text-orange-400 transition-colors">Hardware</a>
+        <a href="software.html" class="nav-active">Software</a>
+        <a href="gallery.html" class="hover:text-orange-400 transition-colors">Gallery</a>
+        <a href="build-log.html" class="hover:text-orange-400 transition-colors">Build Log</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header class="max-w-5xl mx-auto px-6 pt-14 pb-10">
+    <p class="text-orange-400 text-sm font-semibold tracking-widest uppercase mb-2">Documentation</p>
+    <h1 class="text-4xl font-bold mb-4">Software Architecture</h1>
+    <p class="text-gray-400 text-lg max-w-2xl">
+      Calvin's software is split across three purpose-built systems that communicate in a
+      strict hierarchy: Explorator → Cogitator → Instinctus.
+    </p>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 pb-20 space-y-16">
+
+    <!-- Data flow diagram -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6">System Data Flow</h2>
+      <div class="arch-diagram">
+┌──────────────────────────────────────────────────────────┐
+│                       EXPLORATOR                         │
+│               Electron + Vue 3 Desktop App               │
+│                  (Human workstation)                     │
+│                                                          │
+│   Telemetry display · Camera feeds · Manual controls     │
+└─────────────────────────┬────────────────────────────────┘
+                          │ TCP / WebSocket
+                          │ (LAN / WiFi)
+┌─────────────────────────▼────────────────────────────────┐
+│                       COGITATOR                          │
+│              Python services on Jetson Orin Nano         │
+│                                                          │
+│   Vision service (OAK-D)  ·  LLM service (planned)      │
+│   Telemetry relay  ·  Command router                     │
+└─────────────────────────┬────────────────────────────────┘
+                          │ USB-C Serial (UART)
+┌─────────────────────────▼────────────────────────────────┐
+│                      INSTINCTUS                          │
+│             Dual-core Arduino GIGA R1 firmware           │
+│                                                          │
+│   M7: sensor reads · serial bridge · event pub          │
+│   M4: PID balance loop · ODrive CAN commands            │
+└────────────────────┬──────────────┬──────────────────────┘
+                     │  CAN bus     │  CAN bus
+                ┌────▼────┐    ┌────▼────┐
+                │ ODrive  │    │ ODrive  │
+                │  S1 (L) │    │  S1 (R) │
+                └─────────┘    └─────────┘
+      </div>
+    </section>
+
+    <!-- Instinctus -->
+    <section>
+      <h2 class="text-2xl font-bold mb-2 flex items-center gap-3">
+        <span class="text-orange-400">01</span> Instinctus
+      </h2>
+      <p class="text-gray-500 text-sm mb-6">
+        <a href="https://github.com/fungus-wine/calvin_instinctus" target="_blank" rel="noopener"
+           class="text-orange-400 hover:text-orange-300 transition-colors">
+          github.com/fungus-wine/calvin_instinctus
+        </a>
+      </p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Core M7 – Communications Hub</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            The M7 core runs at 480 MHz and owns all I/O peripherals. It is the only core
+            that communicates directly with Cogitator and the outside world.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>Reads ICM-20948 IMU via I²C</li>
+            <li>Polls VL53L4CX ToF sensors</li>
+            <li>Receives commands from Cogitator over UART</li>
+            <li>Publishes sensor data to M4 via event queue</li>
+            <li>Forwards M4 telemetry back to Cogitator</li>
+          </ul>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Core M4 – Real-Time Balance Loop</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            The M4 core runs the hard real-time balance control loop. It consumes IMU-derived
+            tilt angle events from M7 and produces motor velocity commands.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>Consumes tilt angle from M7 event queue</li>
+            <li>Runs PID controller (~1 kHz target loop rate)</li>
+            <li>Sends velocity setpoints to ODrive S1 over CAN</li>
+            <li>Publishes motor state telemetry to M7</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- InstinctusKit -->
+    <section>
+      <h2 class="text-2xl font-bold mb-2 flex items-center gap-3">
+        <span class="text-orange-400">02</span> InstinctusKit
+      </h2>
+      <p class="text-gray-500 text-sm mb-6">
+        <a href="https://github.com/fungus-wine/librarius" target="_blank" rel="noopener"
+           class="text-orange-400 hover:text-orange-300 transition-colors">
+          github.com/fungus-wine/librarius
+        </a>
+        &nbsp;·&nbsp; Shared Arduino library in the <code class="text-gray-400">librarius</code> monorepo
+      </p>
+      <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 max-w-2xl">
+        <p class="text-gray-400 text-sm leading-relaxed mb-4">
+          InstinctusKit is the shared Arduino library that powers inter-core communication between
+          the M7 and M4 cores of the GIGA R1. It provides a typed event queue backed by shared SRAM,
+          with producer/consumer APIs that require no RTOS.
+        </p>
+        <ul class="text-sm text-gray-500 space-y-1.5">
+          <li>Typed event structs (sensor data, commands, telemetry)</li>
+          <li>Lock-free ring buffer in shared SRAM region</li>
+          <li>Header-only Arduino library for easy inclusion</li>
+          <li>Versioned alongside Instinctus in the <code class="text-gray-400">librarius</code> monorepo</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Cogitator -->
+    <section>
+      <h2 class="text-2xl font-bold mb-2 flex items-center gap-3">
+        <span class="text-orange-400">03</span> Cogitator
+      </h2>
+      <p class="text-gray-500 text-sm mb-6">
+        <a href="https://github.com/fungus-wine/calvin_cogitator" target="_blank" rel="noopener"
+           class="text-orange-400 hover:text-orange-300 transition-colors">
+          github.com/fungus-wine/calvin_cogitator
+        </a>
+      </p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Planned Python Services</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Cogitator is architected as a set of independent Python services coordinated by
+            a lightweight message bus.
+          </p>
+          <ul class="text-sm space-y-2.5">
+            <li>
+              <div class="text-gray-300 font-medium">serial_bridge</div>
+              <div class="text-gray-500 text-xs mt-0.5">UART link to Instinctus — reads telemetry, writes commands</div>
+            </li>
+            <li class="pt-2 border-t border-gray-800">
+              <div class="text-gray-300 font-medium">vision_service</div>
+              <div class="text-gray-500 text-xs mt-0.5">OAK-D depth perception, object detection via DepthAI</div>
+            </li>
+            <li class="pt-2 border-t border-gray-800">
+              <div class="text-gray-300 font-medium">llm_service <span class="text-orange-400/60">(planned)</span></div>
+              <div class="text-gray-500 text-xs mt-0.5">Natural-language command processing via local LLM</div>
+            </li>
+            <li class="pt-2 border-t border-gray-800">
+              <div class="text-gray-300 font-medium">api_gateway</div>
+              <div class="text-gray-500 text-xs mt-0.5">WebSocket server — exposes telemetry and commands to Explorator</div>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Runtime Environment</h3>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-800">
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Platform</td>
+                <td class="py-2 text-gray-300">Jetson Orin Nano · JetPack</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Language</td>
+                <td class="py-2 text-gray-300">Python 3.10+</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Vision SDK</td>
+                <td class="py-2 text-gray-300">DepthAI / depthai-python</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Serial</td>
+                <td class="py-2 text-gray-300">pyserial · USB-C UART</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Networking</td>
+                <td class="py-2 text-gray-300">asyncio · websockets</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Explorator -->
+    <section>
+      <h2 class="text-2xl font-bold mb-2 flex items-center gap-3">
+        <span class="text-orange-400">04</span> Explorator
+      </h2>
+      <p class="text-gray-500 text-sm mb-6">
+        <a href="https://github.com/fungus-wine/calvin_explorator" target="_blank" rel="noopener"
+           class="text-orange-400 hover:text-orange-300 transition-colors">
+          github.com/fungus-wine/calvin_explorator
+        </a>
+      </p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Electron + Vue 3</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Explorator is a cross-platform desktop application built with Electron and Vue 3.
+            It connects to Cogitator's WebSocket API over LAN to provide live telemetry and
+            manual control.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>Real-time telemetry dashboard (tilt, speed, distance)</li>
+            <li>Live camera feeds from Cogitator</li>
+            <li>Manual drive controls (keyboard / gamepad planned)</li>
+            <li>PID tuning interface</li>
+            <li>Connection status + reconnection logic</li>
+          </ul>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Tech Stack</h3>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-800">
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Shell</td>
+                <td class="py-2 text-gray-300">Electron (Node.js)</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">UI Framework</td>
+                <td class="py-2 text-gray-300">Vue 3 + Vite</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Styling</td>
+                <td class="py-2 text-gray-300">Tailwind CSS</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Networking</td>
+                <td class="py-2 text-gray-300">WebSocket client</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Targets</td>
+                <td class="py-2 text-gray-300">macOS · Windows · Linux</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- GitHub repos summary -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6">All Repositories</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        <a href="https://github.com/fungus-wine/calvin_instinctus" target="_blank" rel="noopener"
+           class="bg-gray-900 border border-gray-800 hover:border-orange-600 rounded-xl p-5 transition-colors block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold">calvin_instinctus</span>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Arduino C++</span>
+          </div>
+          <p class="text-gray-400 text-sm">Dual-core GIGA R1 real-time balance firmware</p>
+          <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/calvin_instinctus →</div>
+        </a>
+        <a href="https://github.com/fungus-wine/calvin_cogitator" target="_blank" rel="noopener"
+           class="bg-gray-900 border border-gray-800 hover:border-orange-600 rounded-xl p-5 transition-colors block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold">calvin_cogitator</span>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Python</span>
+          </div>
+          <p class="text-gray-400 text-sm">Jetson Orin Nano AI / vision / serial bridge services</p>
+          <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/calvin_cogitator →</div>
+        </a>
+        <a href="https://github.com/fungus-wine/calvin_explorator" target="_blank" rel="noopener"
+           class="bg-gray-900 border border-gray-800 hover:border-orange-600 rounded-xl p-5 transition-colors block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold">calvin_explorator</span>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Electron / Vue</span>
+          </div>
+          <p class="text-gray-400 text-sm">Cross-platform desktop monitoring and control app</p>
+          <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/calvin_explorator →</div>
+        </a>
+        <a href="https://github.com/fungus-wine/librarius" target="_blank" rel="noopener"
+           class="bg-gray-900 border border-gray-800 hover:border-orange-600 rounded-xl p-5 transition-colors block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-semibold">librarius</span>
+            <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Arduino C++</span>
+          </div>
+          <p class="text-gray-400 text-sm">Monorepo containing InstinctusKit shared library</p>
+          <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/librarius →</div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
+    <div class="max-w-5xl mx-auto px-6">
+      Calvin Robot Project &nbsp;·&nbsp;
+      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+         class="hover:text-gray-400 transition-colors">GitHub</a>
+    </div>
+  </footer>
+
+</body>
+</html>

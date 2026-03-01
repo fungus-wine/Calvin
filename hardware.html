@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardware – Calvin Robot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- Navigation -->
+  <nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex items-center gap-8">
+      <a href="index.html" class="font-bold text-orange-400 text-lg tracking-tight">CALVIN</a>
+      <div class="flex gap-6 text-sm text-gray-300">
+        <a href="index.html" class="hover:text-orange-400 transition-colors">Home</a>
+        <a href="hardware.html" class="nav-active">Hardware</a>
+        <a href="software.html" class="hover:text-orange-400 transition-colors">Software</a>
+        <a href="gallery.html" class="hover:text-orange-400 transition-colors">Gallery</a>
+        <a href="build-log.html" class="hover:text-orange-400 transition-colors">Build Log</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <header class="max-w-5xl mx-auto px-6 pt-14 pb-10">
+    <p class="text-orange-400 text-sm font-semibold tracking-widest uppercase mb-2">Documentation</p>
+    <h1 class="text-4xl font-bold mb-4">Hardware</h1>
+    <p class="text-gray-400 text-lg max-w-2xl">
+      Calvin is built around two compute platforms, a brushless drive system, and a suite of
+      sensors — all packaged into a compact wheeled chassis.
+    </p>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 pb-20 space-y-16">
+
+    <!-- System overview -->
+    <section>
+      <div class="arch-diagram">
+┌─────────────────────────────────────────────┐
+│            JETSON ORIN NANO 8 GB            │
+│          (Cogitator – "the brain")          │
+│   OAK-D Pro W  ·  Vision  ·  LLM (future)  │
+│                  │ USB-C serial             │
+└──────────────────┼──────────────────────────┘
+                   │
+┌──────────────────┼──────────────────────────┐
+│         ARDUINO GIGA R1 WiFi                │
+│          (Instinctus – "the spine")         │
+│  Core M7: comms / serial bridge / sensors  │
+│  Core M4: real-time PID balance loop       │
+│           │ CAN bus 250 kbps               │
+└───────────┼────────────────────────────────┘
+            │
+    ┌───────┴───────┐
+    │               │
+┌───▼───┐       ┌───▼───┐
+│ODrive │       │ODrive │
+│  S1   │       │  S1   │
+│ Left  │       │ Right │
+└───┬───┘       └───┬───┘
+    │               │
+ Motor L         Motor R
+ D5312s          D5312s
+      </div>
+    </section>
+
+    <!-- Arduino GIGA R1 -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">01</span> Arduino GIGA R1 WiFi
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Dual-Core Architecture</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            The GIGA R1 is built on the STM32H747XI, a heterogeneous dual-core ARM Cortex processor.
+            Calvin exploits both cores simultaneously via a shared-memory inter-core communication
+            system implemented in the InstinctusKit library.
+          </p>
+          <ul class="space-y-2 text-sm">
+            <li class="flex gap-3">
+              <span class="text-orange-400 font-mono font-bold w-8 shrink-0">M7</span>
+              <span class="text-gray-300">480 MHz · Communications hub. Manages serial link to Cogitator, reads IMU and ToF sensors, publishes events to M4 via shared-memory queue.</span>
+            </li>
+            <li class="flex gap-3 pt-2 border-t border-gray-800">
+              <span class="text-orange-400 font-mono font-bold w-8 shrink-0">M4</span>
+              <span class="text-gray-300">240 MHz · Real-time balance loop. Consumes sensor events, runs PID controller, drives ODrive motor commands over CAN bus.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Key Specs</h3>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-800">
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">SoC</td>
+                <td class="py-2 text-gray-300">STM32H747XI</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">M7 clock</td>
+                <td class="py-2 text-gray-300">480 MHz</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">M4 clock</td>
+                <td class="py-2 text-gray-300">240 MHz</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">RAM</td>
+                <td class="py-2 text-gray-300">1 MB SRAM + 8 MB SDRAM</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Flash</td>
+                <td class="py-2 text-gray-300">2 MB internal + 16 MB QSPI</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Connectivity</td>
+                <td class="py-2 text-gray-300">WiFi · Bluetooth · USB-C</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">CAN bus</td>
+                <td class="py-2 text-gray-300">Built-in FDCAN · 250 kbps</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sensors -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">02</span> Sensors
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <!-- IMU -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-semibold text-orange-300">ICM-20948 IMU</h3>
+            <span class="text-xs text-gray-600 font-mono bg-gray-800 px-2 py-1 rounded">I²C</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            9-axis IMU providing accelerometer, gyroscope, and magnetometer data.
+            Used to estimate the robot's tilt angle for the balance control loop.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>3-axis gyroscope (±2000 dps)</li>
+            <li>3-axis accelerometer (±16 g)</li>
+            <li>3-axis magnetometer (±4900 µT)</li>
+            <li>Read by M7, fused angle sent to M4</li>
+          </ul>
+        </div>
+
+        <!-- ToF -->
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="font-semibold text-orange-300">VL53L4CX Time-of-Flight (× 2)</h3>
+            <span class="text-xs text-gray-600 font-mono bg-gray-800 px-2 py-1 rounded">I²C</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Dual front-facing ToF ranging sensors for obstacle detection. Mounted at different
+            heights to detect both floor obstacles and objects at mid-body level.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>Range: up to 6 m</li>
+            <li>940 nm invisible laser</li>
+            <li>Multi-target detection capability</li>
+            <li>I²C address offset via XSHUT pins</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Drive System -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">03</span> Drive System
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">ODrive S1 (× 2)</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Single-axis brushless motor controllers with integrated encoder support.
+            Communicate with Instinctus via CAN bus using the ODrive CAN protocol.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>CAN bus · 250 kbps</li>
+            <li>Field-oriented control (FOC)</li>
+            <li>Velocity + torque modes</li>
+            <li>Onboard encoder interface</li>
+            <li>Up to 56 V / 40 A per axis</li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">D5312S Motors (× 2)</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            High-torque brushless outrunner motors commonly used in drone and robotics
+            applications. Direct drive — no gearbox.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>Stator: 53 mm diameter</li>
+            <li>KV rating: ~170 KV</li>
+            <li>Peak torque: ~1.5 N·m</li>
+            <li>Direct drive · no gearbox</li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">CAN Bus</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Both ODrive S1 controllers share a single CAN bus segment wired to the Arduino GIGA
+            R1's built-in FDCAN peripheral.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1">
+            <li>Speed: 250 kbps</li>
+            <li>Topology: daisy-chain, 120 Ω terminator</li>
+            <li>Protocol: ODrive ASCII CAN</li>
+            <li>Node IDs: 0x01 (L), 0x02 (R)</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Cogitator hardware -->
+    <section>
+      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">04</span> Jetson Orin Nano (Cogitator)
+      </h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">Jetson Orin Nano 8 GB</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            NVIDIA's entry-level edge AI module. Provides 40 TOPS of AI performance in a compact
+            form factor — more than sufficient for vision inference, object detection, and future
+            LLM tasks.
+          </p>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-800">
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">CPU</td>
+                <td class="py-2 text-gray-300">6-core Arm Cortex-A78AE</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">GPU</td>
+                <td class="py-2 text-gray-300">1024-core Ampere · 32 Tensor cores</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">AI Perf</td>
+                <td class="py-2 text-gray-300">40 TOPS</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">RAM</td>
+                <td class="py-2 text-gray-300">8 GB LPDDR5 (shared CPU/GPU)</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Storage</td>
+                <td class="py-2 text-gray-300">NVMe SSD via M.2</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">OS</td>
+                <td class="py-2 text-gray-300">JetPack (Ubuntu 22.04 base)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <h3 class="font-semibold text-orange-300 mb-3">OAK-D Pro W Camera</h3>
+          <p class="text-gray-400 text-sm leading-relaxed mb-4">
+            Luxonis OAK-D Pro W is a wide-angle stereo depth camera with onboard DepthAI
+            inference acceleration. Connects to the Jetson via USB-C.
+          </p>
+          <ul class="text-sm text-gray-500 space-y-1.5">
+            <li>Stereo depth at up to 30 fps</li>
+            <li>Wide FOV RGB + mono stereo pair</li>
+            <li>Onboard MyriadX VPU for neural inference</li>
+            <li>Active dot projector (Pro) for low-light depth</li>
+            <li>USB 3.1 Gen 1 · DepthAI Python SDK</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
+    <div class="max-w-5xl mx-auto px-6">
+      Calvin Robot Project &nbsp;·&nbsp;
+      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+         class="hover:text-gray-400 transition-colors">GitHub</a>
+    </div>
+  </footer>
+
+</body>
+</html>
