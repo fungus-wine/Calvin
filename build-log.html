@@ -49,11 +49,13 @@
       2. Add the filename (newest first) to posts/index.json
 
       Frontmatter fields:
-        date:      YYYY-MM-DD or YYYY-MM-DDTHH:MM  (required, time used for ordering only)
-        title:     Entry title                      (optional)
-        tag:       Optional label                   (optional)
-        image:     assets/images/photo.jpg          (optional)
-        image_alt: Description                      (optional)
+        date:       YYYY-MM-DD or YYYY-MM-DDTHH:MM  (required, time used for ordering only)
+        title:      Entry title                      (optional)
+        tag:        Optional label                   (optional)
+        image:      assets/images/photo.jpg          (optional)
+        image_alt:  Description                      (optional)
+        image2:     assets/images/photo2.jpg         (optional)
+        image2_alt: Description                      (optional)
     -->
 
     <div id="posts-container"></div>
@@ -77,8 +79,18 @@
       const tag = meta.tag
         ? `<span class="text-xs text-gray-600 bg-gray-900 border border-gray-800 px-2 py-0.5 rounded-full">${meta.tag}</span>`
         : '';
-      const image = meta.image
-        ? `<img src="${meta.image}" alt="${meta.image_alt || ''}" class="rounded-xl border border-gray-700 mt-4 w-full">`
+      function figure(src, alt) {
+        return `<figure class="flex-1 min-w-0">
+            <img src="${src}" alt="${alt || ''}" class="rounded-xl border border-gray-700 w-full">
+            ${alt ? `<figcaption class="text-xs text-gray-500 mt-2 text-center">${alt}</figcaption>` : ''}
+          </figure>`;
+      }
+      const images = [
+        meta.image  ? figure(meta.image,  meta.image_alt  || '') : null,
+        meta.image2 ? figure(meta.image2, meta.image2_alt || '') : null,
+      ].filter(Boolean);
+      const imageBlock = images.length
+        ? `<div class="flex flex-col gap-4 mt-4">${images.join('')}</div>`
         : '';
       return `
         <article class="build-entry mb-12">
@@ -89,7 +101,7 @@
           </div>
           ${meta.title ? `<h2 class="text-lg font-bold text-gray-100 mt-3 mb-4">${meta.title}</h2>` : ''}
           <div class="prose-log">${marked.parse(body.trim())}</div>
-          ${image}
+          ${imageBlock}
         </article>`;
     }
 
