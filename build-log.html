@@ -6,6 +6,7 @@
   <title>Build Log – Calvin Robot</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="assets/css/custom.css">
 </head>
 <body class="bg-gray-950 text-gray-100 min-h-screen">
@@ -121,13 +122,51 @@
   </script>
 
   <!-- Footer -->
-  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
-    <div class="max-w-5xl mx-auto px-6">
-      Calvin Robot Project &nbsp;·&nbsp;
-      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
-         class="hover:text-gray-400 transition-colors">GitHub</a>
+  <footer class="bg-gray-900 border-t border-gray-800">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-xl font-bold mb-6 text-gray-300">Explore the documentation</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <a href="mechanical.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="wrench" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Mechanical</div>
+          <div class="text-xs text-gray-500 mt-1">Frame &amp; chassis</div>
+        </a>
+        <a href="hardware.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="cpu" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Hardware</div>
+          <div class="text-xs text-gray-500 mt-1">Specs &amp; components</div>
+        </a>
+        <a href="software.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="code-2" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Software</div>
+          <div class="text-xs text-gray-500 mt-1">Architecture &amp; code</div>
+        </a>
+        <a href="gallery.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="camera" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Gallery</div>
+          <div class="text-xs text-gray-500 mt-1">Photos &amp; videos</div>
+        </a>
+        <a href="build-log.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="scroll-text" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Build Log</div>
+          <div class="text-xs text-gray-500 mt-1">Progress updates</div>
+        </a>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 py-6 text-center text-gray-600 text-sm">
+      <div class="max-w-5xl mx-auto px-6">
+        Calvin Robot Project &nbsp;·&nbsp;
+        <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+           class="hover:text-gray-400 transition-colors">GitHub</a>
+      </div>
     </div>
   </footer>
 
+  <script>lucide.createIcons();</script>
 </body>
 </html>

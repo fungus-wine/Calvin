@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hardware – Calvin Robot</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="assets/css/custom.css">
 </head>
 <body class="bg-gray-950 text-gray-100 min-h-screen">
@@ -72,17 +73,11 @@
           <div class="rounded-xl border border-orange-500/30 bg-orange-500/5 overflow-hidden">
             <div class="flex items-center justify-between px-5 py-3 border-b border-orange-500/20">
               <span class="font-mono font-bold tracking-widest text-orange-300 text-xs uppercase">Instinctus</span>
-              <span class="text-xs text-gray-500 font-mono">Arduino GIGA R1 WiFi</span>
+              <span class="text-xs text-gray-500 font-mono">Teensy 4.1</span>
             </div>
-            <div class="grid grid-cols-2 divide-x divide-orange-500/10">
-              <div class="px-5 py-4">
-                <div class="text-orange-400/50 font-mono text-xs mb-1.5">M7 core · 480 MHz</div>
-                <p class="text-xs text-gray-500 leading-relaxed">IMU &amp; ToF reads &nbsp;·&nbsp; Serial bridge &nbsp;·&nbsp; Event publisher</p>
-              </div>
-              <div class="px-5 py-4">
-                <div class="text-orange-400/50 font-mono text-xs mb-1.5">M4 core · 240 MHz</div>
-                <p class="text-xs text-gray-500 leading-relaxed">PID balance loop &nbsp;·&nbsp; ODrive CAN commands</p>
-              </div>
+            <div class="px-5 py-4">
+              <div class="text-orange-400/50 font-mono text-xs mb-1.5">ARM Cortex-M7 · 600 MHz</div>
+              <p class="text-xs text-gray-500 leading-relaxed">IMU &amp; ToF reads &nbsp;·&nbsp; Serial bridge &nbsp;·&nbsp; PID balance loop &nbsp;·&nbsp; ODrive CAN commands</p>
             </div>
             <div class="border-t border-orange-500/10 px-5 py-3 flex items-center gap-2">
               <span class="text-orange-400/40 text-xs font-mono">ICM-20948 IMU &nbsp;·&nbsp; VL53L4CX × 2 ToF</span>
@@ -126,28 +121,24 @@
       </div>
     </section>
 
-    <!-- Arduino GIGA R1 -->
+    <!-- Teensy 4.1 -->
     <section>
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span class="text-orange-400">01</span> Arduino GIGA R1 WiFi
+        <span class="text-orange-400">01</span> Teensy 4.1
       </h2>
       <div class="grid md:grid-cols-2 gap-6">
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h3 class="font-semibold text-orange-300 mb-3">Dual-Core Architecture</h3>
+          <h3 class="font-semibold text-orange-300 mb-3">Single-Core Architecture</h3>
           <p class="text-gray-400 text-sm leading-relaxed mb-4">
-            The GIGA R1 is built on the STM32H747XI, a heterogeneous dual-core ARM Cortex processor.
-            Calvin exploits both cores simultaneously via a shared-memory inter-core communication
-            system implemented in the InstinctusKit library.
+            The Teensy 4.1 is built on the NXP i.MX RT1062, an ARM Cortex-M7 running at 600 MHz.
+            All Instinctus tasks — sensor reads, serial comms, the PID balance loop, and CAN bus
+            motor commands — run on this single high-speed core.
           </p>
-          <ul class="space-y-2 text-sm">
-            <li class="flex gap-3">
-              <span class="text-orange-400 font-mono font-bold w-8 shrink-0">M7</span>
-              <span class="text-gray-300">480 MHz · Communications hub. Manages serial link to Cogitator, reads IMU and ToF sensors, publishes events to M4 via shared-memory queue.</span>
-            </li>
-            <li class="flex gap-3 pt-2 border-t border-gray-800">
-              <span class="text-orange-400 font-mono font-bold w-8 shrink-0">M4</span>
-              <span class="text-gray-300">240 MHz · Real-time balance loop. Consumes sensor events, runs PID controller, drives ODrive motor commands over CAN bus.</span>
-            </li>
+          <ul class="space-y-2 text-sm text-gray-300">
+            <li>Reads IMU and ToF sensors via I²C</li>
+            <li>Manages serial link to Cogitator</li>
+            <li>Runs PID balance control loop</li>
+            <li>Drives ODrive motor commands over CAN bus</li>
           </ul>
         </div>
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -156,87 +147,27 @@
             <tbody class="divide-y divide-gray-800">
               <tr>
                 <td class="py-2 text-gray-500 pr-4">SoC</td>
-                <td class="py-2 text-gray-300">STM32H747XI</td>
+                <td class="py-2 text-gray-300">NXP i.MX RT1062</td>
               </tr>
               <tr>
-                <td class="py-2 text-gray-500 pr-4">M7 clock</td>
-                <td class="py-2 text-gray-300">480 MHz</td>
-              </tr>
-              <tr>
-                <td class="py-2 text-gray-500 pr-4">M4 clock</td>
-                <td class="py-2 text-gray-300">240 MHz</td>
+                <td class="py-2 text-gray-500 pr-4">Core</td>
+                <td class="py-2 text-gray-300">ARM Cortex-M7 · 600 MHz</td>
               </tr>
               <tr>
                 <td class="py-2 text-gray-500 pr-4">RAM</td>
-                <td class="py-2 text-gray-300">1 MB SRAM + 8 MB SDRAM</td>
+                <td class="py-2 text-gray-300">1 MB (512 KB tightly-coupled + 512 KB general)</td>
               </tr>
               <tr>
                 <td class="py-2 text-gray-500 pr-4">Flash</td>
-                <td class="py-2 text-gray-300">2 MB internal + 16 MB QSPI</td>
+                <td class="py-2 text-gray-300">8 MB onboard</td>
               </tr>
               <tr>
                 <td class="py-2 text-gray-500 pr-4">Connectivity</td>
-                <td class="py-2 text-gray-300">WiFi · Bluetooth · USB-C</td>
+                <td class="py-2 text-gray-300">USB · Ethernet · SD card</td>
               </tr>
               <tr>
                 <td class="py-2 text-gray-500 pr-4">CAN bus</td>
-                <td class="py-2 text-gray-300">Built-in FDCAN · 250 kbps</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- GIGA Display Shield -->
-    <section>
-      <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span class="text-orange-400">02</span> Arduino GIGA Display Shield
-      </h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h3 class="font-semibold text-orange-300 mb-3">Overview</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-4">
-            The Arduino GIGA Display Shield mounts directly onto the GIGA R1 via its high-density
-            connector, adding a 3.97&Prime; capacitive touchscreen to the board with no additional wiring.
-            On Calvin it serves as a local status display and on-robot control panel, showing balance
-            angle, motor telemetry, and allowing basic mode changes without the desktop app.
-          </p>
-          <ul class="text-sm text-gray-500 space-y-1">
-            <li>480 × 800 px TFT LCD, portrait orientation</li>
-            <li>5-point capacitive multi-touch</li>
-            <li>Driven by the M7 core via <code class="text-gray-400 bg-gray-800 px-1 rounded">Arduino_GigaDisplay</code> library</li>
-            <li>LVGL graphics framework for UI widgets</li>
-            <li>Onboard microphone &amp; camera connector (unused)</li>
-          </ul>
-        </div>
-        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h3 class="font-semibold text-orange-300 mb-3">Key Specs</h3>
-          <table class="w-full text-sm">
-            <tbody class="divide-y divide-gray-800">
-              <tr>
-                <td class="py-2 text-gray-500 pr-4">Display size</td>
-                <td class="py-2 text-gray-300">3.97&Prime; TFT LCD</td>
-              </tr>
-              <tr>
-                <td class="py-2 text-gray-500 pr-4">Resolution</td>
-                <td class="py-2 text-gray-300">480 × 800 px</td>
-              </tr>
-              <tr>
-                <td class="py-2 text-gray-500 pr-4">Touch</td>
-                <td class="py-2 text-gray-300">Capacitive, 5-point multi-touch</td>
-              </tr>
-              <tr>
-                <td class="py-2 text-gray-500 pr-4">Interface</td>
-                <td class="py-2 text-gray-300">High-density GIGA connector (no wiring)</td>
-              </tr>
-              <tr>
-                <td class="py-2 text-gray-500 pr-4">Graphics lib</td>
-                <td class="py-2 text-gray-300">LVGL via Arduino_GigaDisplay_GFX</td>
-              </tr>
-              <tr>
-                <td class="py-2 text-gray-500 pr-4">Extras</td>
-                <td class="py-2 text-gray-300">PDM microphone · camera connector</td>
+                <td class="py-2 text-gray-300">Built-in FlexCAN · 250 kbps</td>
               </tr>
             </tbody>
           </table>
@@ -247,7 +178,7 @@
     <!-- Sensors -->
     <section>
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span class="text-orange-400">03</span> Sensors
+        <span class="text-orange-400">02</span> Sensors
       </h2>
       <div class="grid md:grid-cols-2 gap-6">
 
@@ -265,7 +196,7 @@
             <li>3-axis gyroscope (±2000 dps)</li>
             <li>3-axis accelerometer (±16 g)</li>
             <li>3-axis magnetometer (±4900 µT)</li>
-            <li>Read by M7, fused angle sent to M4</li>
+            <li>Read via I²C, fused angle feeds balance loop</li>
           </ul>
         </div>
 
@@ -293,7 +224,7 @@
     <!-- Drive System -->
     <section>
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span class="text-orange-400">04</span> Drive System
+        <span class="text-orange-400">03</span> Drive System
       </h2>
       <div class="grid md:grid-cols-3 gap-6">
 
@@ -329,8 +260,8 @@
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
           <h3 class="font-semibold text-orange-300 mb-3">CAN Bus</h3>
           <p class="text-gray-400 text-sm leading-relaxed mb-4">
-            Both ODrive S1 controllers share a single CAN bus segment wired to the Arduino GIGA
-            R1's built-in FDCAN peripheral.
+            Both ODrive S1 controllers share a single CAN bus segment wired to the Teensy 4.1's
+            built-in FlexCAN peripheral.
           </p>
           <ul class="text-sm text-gray-500 space-y-1">
             <li>Speed: 250 kbps</li>
@@ -346,7 +277,7 @@
     <!-- Cogitator hardware -->
     <section>
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span class="text-orange-400">05</span> Jetson Orin Nano (Cogitator)
+        <span class="text-orange-400">04</span> Jetson Orin Nano (Cogitator)
       </h2>
       <div class="grid md:grid-cols-2 gap-6">
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
@@ -406,7 +337,7 @@
     <!-- Audio -->
     <section>
       <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span class="text-orange-400">06</span> Audio
+        <span class="text-orange-400">05</span> Audio
       </h2>
       <div class="grid md:grid-cols-2 gap-6">
 
@@ -454,13 +385,51 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
-    <div class="max-w-5xl mx-auto px-6">
-      Calvin Robot Project &nbsp;·&nbsp;
-      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
-         class="hover:text-gray-400 transition-colors">GitHub</a>
+  <footer class="bg-gray-900 border-t border-gray-800">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-xl font-bold mb-6 text-gray-300">Explore the documentation</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <a href="mechanical.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="wrench" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Mechanical</div>
+          <div class="text-xs text-gray-500 mt-1">Frame &amp; chassis</div>
+        </a>
+        <a href="hardware.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="cpu" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Hardware</div>
+          <div class="text-xs text-gray-500 mt-1">Specs &amp; components</div>
+        </a>
+        <a href="software.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="code-2" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Software</div>
+          <div class="text-xs text-gray-500 mt-1">Architecture &amp; code</div>
+        </a>
+        <a href="gallery.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="camera" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Gallery</div>
+          <div class="text-xs text-gray-500 mt-1">Photos &amp; videos</div>
+        </a>
+        <a href="build-log.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="scroll-text" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Build Log</div>
+          <div class="text-xs text-gray-500 mt-1">Progress updates</div>
+        </a>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 py-6 text-center text-gray-600 text-sm">
+      <div class="max-w-5xl mx-auto px-6">
+        Calvin Robot Project &nbsp;·&nbsp;
+        <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+           class="hover:text-gray-400 transition-colors">GitHub</a>
+      </div>
     </div>
   </footer>
 
+  <script>lucide.createIcons();</script>
 </body>
 </html>

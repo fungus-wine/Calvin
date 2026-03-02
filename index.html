@@ -74,11 +74,15 @@
         and human-robot interaction. It rides on two brushless motors driven by ODrive S1 controllers,
         staying upright via a PID control loop running on an Arduino GIGA R1.
       </p>
-      <p class="text-gray-400 leading-relaxed max-w-3xl">
+      <p class="text-gray-400 leading-relaxed max-w-3xl mb-4">
         A Jetson Orin Nano rides on top as the "brain" — handling computer vision via an OAK-D Pro W
         stereo camera, LLM integration, and acting as a serial bridge to the lower-level firmware running on a Teensy 4.1.
         A custom Electron desktop app provides real-time telemetry and remote control over local Wifi.
       </p>
+      <p class="text-gray-400 leading-relaxed max-w-3xl">
+        Calvin is simultaneously over- and under-engineered by someone with more enthusiasm than knowledge. Don't mistake this for professional-grade work.
+      </p>
+
     </div>
   </section>
 
@@ -150,11 +154,17 @@
     </div>
   </section>
 
-  <!-- Quick links -->
-  <section class="bg-gray-900 border-t border-gray-800 py-12">
-    <div class="max-w-5xl mx-auto px-6">
+  <!-- Footer -->
+  <footer class="bg-gray-900 border-t border-gray-800">
+    <div class="max-w-5xl mx-auto px-6 py-12">
       <h2 class="text-xl font-bold mb-6 text-gray-300">Explore the documentation</h2>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <a href="mechanical.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="wrench" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Mechanical</div>
+          <div class="text-xs text-gray-500 mt-1">Frame &amp; chassis</div>
+        </a>
         <a href="hardware.html"
            class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
           <i data-lucide="cpu" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
@@ -181,14 +191,12 @@
         </a>
       </div>
     </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
-    <div class="max-w-5xl mx-auto px-6">
-      Calvin Robot Project &nbsp;·&nbsp;
-      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
-         class="hover:text-gray-400 transition-colors">GitHub</a>
+    <div class="border-t border-gray-800 py-6 text-center text-gray-600 text-sm">
+      <div class="max-w-5xl mx-auto px-6">
+        Calvin Robot Project &nbsp;·&nbsp;
+        <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+           class="hover:text-gray-400 transition-colors">GitHub</a>
+      </div>
     </div>
   </footer>
 

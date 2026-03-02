@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mechanical – Calvin Robot</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="assets/css/custom.css">
 </head>
 <body class="bg-gray-950 text-gray-100 min-h-screen">
@@ -92,8 +93,8 @@
 
           <div class="border border-gray-700/50 rounded-lg p-4">
             <div class="text-gray-500 font-mono text-xs uppercase mb-2">Instinctus</div>
-            <div class="text-gray-300 font-medium mb-1">Arduino GIGA R1 & Display Shield</div>
-            <div class="text-gray-500 text-xs">Mounted to front of frame so that the display is visible on the front of the chassis.</div>
+            <div class="text-gray-300 font-medium mb-1">Teensy 4.1</div>
+            <div class="text-gray-500 text-xs">Mounted to front of frame out of the way of the motors and Jetson.</div>
           </div>
           <div class="border border-gray-700/50 rounded-lg p-4">
             <div class="text-gray-500 font-mono text-xs uppercase mb-2">Instinctus</div>
@@ -179,7 +180,7 @@
           <h3 class="font-semibold text-orange-300 mb-3">Motor Controllers</h3>
           <p class="text-gray-400 text-sm leading-relaxed mb-4">
             Each motor is driven by a dedicated ODrive S1 single-axis brushless controller.
-            The ODrives accept high-level velocity setpoints from the Arudino GIGA's M4 core over CAN bus.
+            The ODrives accept high-level velocity setpoints from the Teensy 4.1 over CAN bus.
           </p>
           <ul class="text-sm text-gray-500 space-y-1.5">
             <li>ODrive S1 × 2</li>
@@ -236,7 +237,7 @@
           <h3 class="font-semibold text-orange-300 mb-3">Power Distribution</h3>
           <p class="text-gray-400 text-sm leading-relaxed mb-4">
             The battery feeds the ODrive S1 controllers directly at pack voltage. Lower-voltage
-            rails for the Arduino GIGA R1 and Jetson Orin Nano are derived via dedicated BEC /
+            rails for the Teensy 4.1 and Jetson Orin Nano are derived via dedicated BEC /
             DC-DC converters to isolate logic power from the noisy motor supply. 
           </p>
           <ul class="text-sm text-gray-500 space-y-2">
@@ -246,11 +247,11 @@
             </li>
             <li class="flex gap-3 pt-2 border-t border-gray-800">
               <span class="text-orange-400 font-mono text-xs w-16 shrink-0 pt-0.5">5 V logic</span>
-              <span>DC-DC step-down for Arduino GIGA R1 and peripheral sensors</span>
+              <span>Buck converter step-down for Teensy 4.1 and peripheral sensors</span>
             </li>
             <li class="flex gap-3 pt-2 border-t border-gray-800">
               <span class="text-orange-400 font-mono text-xs w-16 shrink-0 pt-0.5">Jetson</span>
-              <span>Regulated supply via barrel jack — Jetson Orin Nano carrier board input</span>
+              <span>Buck converter step-down for Jetson and peripheral devices</span>
             </li>
           </ul>
         </div>
@@ -261,13 +262,51 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
-    <div class="max-w-5xl mx-auto px-6">
-      Calvin Robot Project &nbsp;·&nbsp;
-      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
-         class="hover:text-gray-400 transition-colors">GitHub</a>
+  <footer class="bg-gray-900 border-t border-gray-800">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-xl font-bold mb-6 text-gray-300">Explore the documentation</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <a href="mechanical.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="wrench" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Mechanical</div>
+          <div class="text-xs text-gray-500 mt-1">Frame &amp; chassis</div>
+        </a>
+        <a href="hardware.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="cpu" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Hardware</div>
+          <div class="text-xs text-gray-500 mt-1">Specs &amp; components</div>
+        </a>
+        <a href="software.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="code-2" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Software</div>
+          <div class="text-xs text-gray-500 mt-1">Architecture &amp; code</div>
+        </a>
+        <a href="gallery.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="camera" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Gallery</div>
+          <div class="text-xs text-gray-500 mt-1">Photos &amp; videos</div>
+        </a>
+        <a href="build-log.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="scroll-text" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Build Log</div>
+          <div class="text-xs text-gray-500 mt-1">Progress updates</div>
+        </a>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 py-6 text-center text-gray-600 text-sm">
+      <div class="max-w-5xl mx-auto px-6">
+        Calvin Robot Project &nbsp;·&nbsp;
+        <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+           class="hover:text-gray-400 transition-colors">GitHub</a>
+      </div>
     </div>
   </footer>
 
+  <script>lucide.createIcons();</script>
 </body>
 </html>

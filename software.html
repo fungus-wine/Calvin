@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Software – Calvin Robot</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="assets/css/custom.css">
 </head>
 <body class="bg-gray-950 text-gray-100 min-h-screen">
@@ -91,21 +92,11 @@
           <div class="rounded-xl border border-orange-500/30 bg-orange-500/5 overflow-hidden">
             <div class="flex items-center justify-between px-5 py-3 border-b border-orange-500/20">
               <span class="font-mono font-bold tracking-widest text-orange-300 text-xs uppercase">Instinctus</span>
-              <span class="text-xs text-gray-500 font-mono">Arduino GIGA R1</span>
+              <span class="text-xs text-gray-500 font-mono">Teensy 4.1</span>
             </div>
-            <div class="grid grid-cols-2 divide-x divide-orange-500/10">
-              <div class="px-5 py-4">
-                <div class="text-orange-400/50 font-mono text-xs mb-1.5">M7 core</div>
-                <p class="text-xs text-gray-500 leading-relaxed">Sensor reads &nbsp;·&nbsp; Serial bridge &nbsp;·&nbsp; Event publisher</p>
-              </div>
-              <div class="px-5 py-4">
-                <div class="text-orange-400/50 font-mono text-xs mb-1.5">M4 core</div>
-                <p class="text-xs text-gray-500 leading-relaxed">PID balance loop &nbsp;·&nbsp; ODrive CAN commands</p>
-              </div>
-            </div>
-            <div class="border-t border-orange-500/10 px-5 py-3 flex items-center gap-2">
-              <span class="text-orange-400/40 text-xs font-mono">M7 ⇄ M4</span>
-              <p class="text-xs text-gray-600">Lock-free ring buffer in shared SRAM &nbsp;·&nbsp; typed event structs &nbsp;·&nbsp; no RTOS required</p>
+            <div class="px-5 py-4">
+              <div class="text-orange-400/50 font-mono text-xs mb-1.5">ARM Cortex-M7 · 600 MHz</div>
+              <p class="text-xs text-gray-500 leading-relaxed">Sensor reads &nbsp;·&nbsp; Serial bridge &nbsp;·&nbsp; PID balance loop &nbsp;·&nbsp; ODrive CAN commands</p>
             </div>
           </div>
 
@@ -146,31 +137,51 @@
       </p>
       <div class="grid md:grid-cols-2 gap-6">
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h3 class="font-semibold text-orange-300 mb-3">Core M7 – Communications Hub</h3>
+          <h3 class="font-semibold text-orange-300 mb-3">Single-Core Architecture</h3>
           <p class="text-gray-400 text-sm leading-relaxed mb-4">
-            The M7 core runs at 480 MHz and owns all I/O peripherals. It is the only core
-            that communicates directly with Cogitator and the outside world.
+            The Teensy 4.1's ARM Cortex-M7 runs at 600 MHz and handles all Instinctus tasks
+            on a single core — sensor reads, serial comms, the PID balance loop, and CAN bus
+            motor commands.
           </p>
           <ul class="text-sm text-gray-500 space-y-1.5">
             <li>Reads ICM-20948 IMU via I²C</li>
             <li>Polls VL53L4CX ToF sensors</li>
             <li>Receives commands from Cogitator over UART</li>
-            <li>Publishes sensor data to M4 via event queue</li>
-            <li>Forwards M4 telemetry back to Cogitator</li>
+            <li>Runs PID controller (~1 kHz target loop rate)</li>
+            <li>Sends velocity setpoints to ODrive S1 over CAN</li>
+            <li>Forwards telemetry back to Cogitator</li>
           </ul>
         </div>
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h3 class="font-semibold text-orange-300 mb-3">Core M4 – Real-Time Balance Loop</h3>
-          <p class="text-gray-400 text-sm leading-relaxed mb-4">
-            The M4 core runs the hard real-time balance control loop. It consumes IMU-derived
-            tilt angle events from M7 and produces motor velocity commands.
-          </p>
-          <ul class="text-sm text-gray-500 space-y-1.5">
-            <li>Consumes tilt angle from M7 event queue</li>
-            <li>Runs PID controller (~1 kHz target loop rate)</li>
-            <li>Sends velocity setpoints to ODrive S1 over CAN</li>
-            <li>Publishes motor state telemetry to M7</li>
-          </ul>
+          <h3 class="font-semibold text-orange-300 mb-3">Key Details</h3>
+          <table class="w-full text-sm">
+            <tbody class="divide-y divide-gray-800">
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Board</td>
+                <td class="py-2 text-gray-300">Teensy 4.1</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">SoC</td>
+                <td class="py-2 text-gray-300">NXP i.MX RT1062</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Core</td>
+                <td class="py-2 text-gray-300">ARM Cortex-M7 · 600 MHz</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Framework</td>
+                <td class="py-2 text-gray-300">Arduino / Teensyduino</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">CAN</td>
+                <td class="py-2 text-gray-300">FlexCAN · 250 kbps</td>
+              </tr>
+              <tr>
+                <td class="py-2 text-gray-500 pr-4">Loop rate</td>
+                <td class="py-2 text-gray-300">~1 kHz target</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -189,13 +200,13 @@
       </p>
       <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 max-w-2xl">
         <p class="text-gray-400 text-sm leading-relaxed mb-4">
-          InstinctusKit is the shared Arduino library that powers inter-core communication between
-          the M7 and M4 cores of the GIGA R1. It provides a typed event queue backed by shared SRAM,
-          with producer/consumer APIs that require no RTOS.
+          InstinctusKit is the shared Arduino library used by the Instinctus firmware. It provides
+          reusable abstractions for sensor drivers, serial protocol handling, and CAN bus communication
+          with the ODrive controllers.
         </p>
         <ul class="text-sm text-gray-500 space-y-1.5">
           <li>Typed event structs (sensor data, commands, telemetry)</li>
-          <li>Lock-free ring buffer in shared SRAM region</li>
+          <li>Serial protocol framing for Cogitator link</li>
           <li>Header-only Arduino library for easy inclusion</li>
           <li>Versioned alongside Instinctus in the <code class="text-gray-400">librarius</code> monorepo</li>
         </ul>
@@ -346,7 +357,7 @@
             <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Ruby gem</span>
           </div>
           <p class="text-gray-400 text-sm leading-relaxed mb-4">
-            A friendly CLI wrapper around <code class="text-gray-300">arduino-cli</code>.
+            A friendly CLI wrapper around <code class="text-gray-300">arduino-cli</code> and <code class="text-gray-300">teensy_loader_cli</code>.
             Reads a per-project <code class="text-gray-300">.grotconfig</code> TOML file for board
             FQBN, port, and sketch path, then exposes memorable sub-commands for the most common
             development loops.
@@ -405,7 +416,7 @@
             <span class="font-semibold">calvin_instinctus</span>
             <span class="text-xs text-gray-500 font-mono bg-gray-800 px-2 py-1 rounded">Arduino C++</span>
           </div>
-          <p class="text-gray-400 text-sm">Dual-core GIGA R1 real-time balance firmware</p>
+          <p class="text-gray-400 text-sm">Teensy 4.1 real-time balance firmware</p>
           <div class="text-orange-400 text-xs mt-3">github.com/fungus-wine/calvin_instinctus →</div>
         </a>
         <a href="https://github.com/fungus-wine/calvin_cogitator" target="_blank" rel="noopener"
@@ -459,13 +470,51 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-gray-800 py-8 text-center text-gray-600 text-sm">
-    <div class="max-w-5xl mx-auto px-6">
-      Calvin Robot Project &nbsp;·&nbsp;
-      <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
-         class="hover:text-gray-400 transition-colors">GitHub</a>
+  <footer class="bg-gray-900 border-t border-gray-800">
+    <div class="max-w-5xl mx-auto px-6 py-12">
+      <h2 class="text-xl font-bold mb-6 text-gray-300">Explore the documentation</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <a href="mechanical.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="wrench" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Mechanical</div>
+          <div class="text-xs text-gray-500 mt-1">Frame &amp; chassis</div>
+        </a>
+        <a href="hardware.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="cpu" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Hardware</div>
+          <div class="text-xs text-gray-500 mt-1">Specs &amp; components</div>
+        </a>
+        <a href="software.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="code-2" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Software</div>
+          <div class="text-xs text-gray-500 mt-1">Architecture &amp; code</div>
+        </a>
+        <a href="gallery.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="camera" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Gallery</div>
+          <div class="text-xs text-gray-500 mt-1">Photos &amp; videos</div>
+        </a>
+        <a href="build-log.html"
+           class="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-4 transition-colors text-center">
+          <i data-lucide="scroll-text" class="w-6 h-6 mx-auto mb-2 text-orange-400"></i>
+          <div class="font-semibold text-sm">Build Log</div>
+          <div class="text-xs text-gray-500 mt-1">Progress updates</div>
+        </a>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 py-6 text-center text-gray-600 text-sm">
+      <div class="max-w-5xl mx-auto px-6">
+        Calvin Robot Project &nbsp;·&nbsp;
+        <a href="https://github.com/fungus-wine" target="_blank" rel="noopener"
+           class="hover:text-gray-400 transition-colors">GitHub</a>
+      </div>
     </div>
   </footer>
 
+  <script>lucide.createIcons();</script>
 </body>
 </html>
